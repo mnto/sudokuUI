@@ -1,9 +1,8 @@
 # Project Sudoku
-# Date created: 5/26/16
 
-This project includes a stack data structure to assist backtracking.   
-Written in C++  
+This project supports user interaction. It generates sudoku problems and users can play with it   
+Using HTML, CSS, Javascript. 
 Files included:  
-  - stack.{h, cc} for data structure  
-  - sudokuboard.{h, cc} for setting up the board  
-  - sudokuboard.cc for algorithm  
+  - sudokua.html 
+  - sudoku.css 
+  - sudoku.js 
