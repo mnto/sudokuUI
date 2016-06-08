@@ -21,8 +21,9 @@ function draw() {
 	board[0].innerHTML = txt;
 	setSize(Number(size));
 	drawBorder(Number(size));
-	transform(Number(size), "main diagonal");
-	//setUpBoard();
+	solution = transform("swap col groups");
+	writeSolutionToBoard(solution);
+	removeNumbers();
 }
 
 function transform() {
@@ -35,71 +36,120 @@ function transform() {
 				 	 [3,4,5,6,7,8,9,1,2],
 					 [6,7,8,9,1,2,3,4,5],
 					 [9,1,2,3,4,5,6,7,8]],
-	temp,
-	currentSolution = [],
-	dir = direction,
-	tempList;
-	for (var i = 0; i < arguments.lenght; i++) {
+	currentSolution = rootGrid1;
+	for (var i = 0; i < arguments.length; i++) {
 		if (arguments[i] ==  "vertical") {
 			for (r = 0; r < 9; r++) {
-				tempList = rootGrid1[r];
+				//tempList = rootGrid1[r];
 				for (c = 0; c < 4; c++) {
-					temp = tempList[c];
+					temp = currentSolution[r][c];
 					//console.log(temp);
-					tempList[c] = tempList[8 - c];
+					currentSolution[r][c] = currentSolution[r][8 - c];
 					//console.log(tempList[8-c]);
-					tempList[8-c] = temp;
+					currentSolution[r][8 - c] = temp;
 				}
-				console.log(tempList);
-				currentSolution.push(tempList);
+				console.log(currentSolution[r]);
+				//currentSolution.push(tempList);
 			}
 		}
 		else if (arguments[i]  == "horizontal") {
 			for (r = 0; r < 4; r++) {
-				tempList = rootGrid1[r];
-				tempList2 = rootGrid1[8 - r];
+				//tempList = rootGrid1[r];
+				//tempList2 = rootGrid1[8 - r];
 				for (c = 0; c < 9; c++) {
-					temp = tempList[c];
+					temp = currentSolution[r][c];
 					//console.log(temp);
-					tempList[c] = tempList2[c];
-					tempList2[c] = temp;
+					currentSolution[r][c] = currentSolution[8 - r][c];
+					currentSolution[8 - r][c] = temp;
 					//console.log(tempList[8-c]);
 				}
-				currentSolution.splice(r, 0, tempList);
-				currentSolution.splice(currentSolution.length - r, 0, tempList2);
+				//currentSolution.splice(r, 0, tempList);
+				//currentSolution.splice(currentSolution.length - r, 0, tempList2);
 			}
-			currentSolution.splice(4, 0, rootGrid1[4]);
+			for (r = 0; r < 9; r++) {
+				console.log(currentSolution[r]);
+			}
+			//currentSolution.splice(4, 0, rootGrid1[4]);
 		}
 		else if (arguments[i] == "main diagonal") {
 			for (r = 0; r < 9; r++) {
-				tempboard = rootGrid1;
+				//tempboard = rootGrid1;
 				for (c = 0; c < 9; c++) {
 					if(c > r) {
-						temp = tempboard[r][c];
-						tempboard[r][c] = tempboard[c][r];
-						tempboard[c][r] = temp;
+						temp = currentSolution[r][c];
+						currentSolution[r][c] = currentSolution[c][r];
+						currentSolution[c][r] = temp;
 					}
 				}
-				currentSolution.push(tempboard[r]);
+				//currentSolution.push(tempboard[r]);
 				console.log(currentSolution[r]);
 			}
 		}
 		else if (arguments[i] == "swap two rows") {
-			tempboard = rootGrid1;
+			//tempboard = rootGrid1;
 			for (r = 0; r < 9; r++) {
 				for (c = 0; c < 9; c++) {
-					if (r == 0) {
-						tempList = rootGrid1[r];
-						tempboard[r][c] = tempboard[2][c];
-						tempboard[2][c] = tempList[c];
+					if (r == 0 || r == 3 || r == 6) {
+						temp = currentSolution[r][c];
+						currentSolution[r][c] = currentSolution[r + 2][c];
+						currentSolution[r + 2][c] = temp;
 					}
 				}
+				console.log(currentSolution[r]);
 			}
 		}
+		else if (arguments[i] == "swap two columns") {
+			for (r = 0; r < 9; r++) {
+				for (c = 0; c < 9; c++) {
+					if (c == 0 || c == 3 || c == 6) {
+						temp = currentSolution[r][c];
+						currentSolution[r][c] = currentSolution[r][c + 2];
+						currentSolution[r][c + 2] = temp;		
+					}
+				}
+				console.log(currentSolution[r]);
+			}
+		}
+		else if (arguments[i] == "swap row groups") {
+			for (r = 3; r < 6; r++) {
+				for (c = 0; c < 9; c++) {
+					temp = currentSolution[r][c];
+					currentSolution[r][c] = currentSolution[r + 3][c];
+					currentSolution[r + 3][c] = temp;
+				}
+			}
+			for (r = 0; r < 9; r++) {
+				console.log(currentSolution[r]);
+			}
+		}
+		else if (arguments[i] == "swap col groups") {
+			for (r = 0; r < 9; r++) {
+				for (c = 3; c < 6; c++) {
+					temp = currentSolution[r][c];
+					currentSolution[r][c] = currentSolution[r][c + 3];
+					currentSolution[r][c + 3] = temp;
+				}
+				console.log(currentSolution[r]);
+			}
+		}
+		return currentSolution;
 	}
 	
 }
 
+function writeSolutionToBoard(solution) {
+	for (r = 0; r < 9; r++) {
+		for (c = 0; c < 9; c++) {
+			x = document.getElementsByClassName("line")[r];
+			x.getElementsByClassName("num")[c].value = solution[r][c];
+			x.getElementsByClassName("num")[c].disabled = true;
+		}
+	}
+}
+
+function removeNumbers() {
+	return;
+}
 
 function setSize(size) {
 	/* ------Reset width for bigger size so that player can see the whole board--------*/
