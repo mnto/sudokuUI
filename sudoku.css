@@ -16,6 +16,10 @@
     background-color: #404040;
 }
 
+div {
+	text-align: center;
+	align-items: center;
+}
 body {
 	margin-top: 0px;
 	margin-left: 0px;
@@ -109,12 +113,22 @@ input {
 	font-size: 22px;
 }
 
-.block {
+/*.block {
 	text-align: center;
 	font-family: Arial;
-}
+	margin-top: 20px;
+	margin-bottom: 20px;
+}*/
 
-#button{
+button {
 	font-size: 15px;
+	font-family: Arial;
+	margin-top: 20px;
+	margin-bottom: 20px;
 }
+/*#solution {
+	align-items: center;
+	position: absolute;
+	text-align: center;
+}*/
 

@@ -1,5 +1,7 @@
+var solution;
+var size;
 function draw() {
-	var size = document.getElementsByClassName("size")[0].value;
+	size = Number(document.getElementsByClassName("size")[0].value);
 	//var size = Math.pow(input, 2);
 	var board = document.getElementsByClassName("board");
 	// console.log(size);
@@ -9,6 +11,46 @@ function draw() {
 		|| document.getElementsByClassName("size")[i].value > 5)
 			alert("Invalid input");
 	}
+	// var txt = "";
+	// for (i = 0; i < size * size; i++) {
+	// 	txt += "<div class='line'>";
+	// 	for (j = 0; j < size * size; j++) {
+	// 		txt += "<div class='square'> \
+	// 		<input type='text' class='num' onkeypress='return checkInput(event, this)'></div>";
+	// 	}
+	// 	txt += "</div>";
+	// }
+	// txt += "<div class='block'> \
+	// <button id='button' onclick='checkAnswer()'>Finish</button> \
+	// <p id='result'></p> \
+	// </div> \
+	// <div><button id='solution' onclick='showsolution()'>Show Solution</butoon></div>";
+	board[0].innerHTML = drawOutlineToHTML();
+	board[0].innerHTML += "<div class='block'> \
+	<button id='button' onclick='checkAnswer()'>Finish</button> \
+	<p id='result'></p> \
+	</div> ";
+	setSize();
+	drawBorder();
+	solution = transform();
+	// ----------------console solution---------------------
+	for (r = 0; r < 9; r++) {
+		console.log(solution[r]);
+	}
+	console.log("<br>");
+	// -----------------------------------------------------
+	writeSolutionToBoard(solution);
+	removeCells();
+}
+
+function size() {
+	return document.getElementsByClassName("size")[0].value;
+}
+
+function getSolution() {
+	return solution;
+}
+function drawOutlineToHTML() {
 	var txt = "";
 	for (i = 0; i < size * size; i++) {
 		txt += "<div class='line'>";
@@ -18,12 +60,7 @@ function draw() {
 		}
 		txt += "</div>";
 	}
-	board[0].innerHTML = txt;
-	setSize(Number(size));
-	drawBorder(Number(size));
-	var solution = transform();
-	writeSolutionToBoard(solution);
-	removeCells();
+	return txt;
 }
 
 function transform() {
@@ -60,8 +97,8 @@ function transform() {
 	transformations = ["vertical", "horizontal", "main diagonal", 
 							"swap two rows", "swap two columns", "swap row groups",
 							"swap col groups", "none"],
-	howManyTimes = Math.floor((Math.random() * 10) + 0); // number of transformations from 0 - 10
-
+	howManyTimes = Math.floor((Math.random() * 10) + 3); // number of transformations from 3 - 13
+	console.log("Number of transformations: " + howManyTimes);
 	for (var i = 0; i < howManyTimes; i++) {
 		index = Math.floor((Math.random() * (transformations.length - 1)) + 0); // random index in transformations
 		if (transformations[index] ==  "vertical") {
@@ -164,7 +201,7 @@ function removeCells() {
 	}
 }
 
-function setSize(size) {
+function setSize() {
 	/* ------Reset width for bigger size so that player can see the whole board--------*/
 	var width, height;
 	if (size >= 1 && size <= 3) {
@@ -182,15 +219,17 @@ function setSize(size) {
 	}
 }
 
-function drawBorder(size) {
+function drawBorder() {
 	var parent = document.getElementsByClassName("line");
 	var i = size - 1;
+	//console.log(size);
 	while (i < size * size - 1) {
 		for (j = 0; j < size * size; j++) {
 			parent[j].getElementsByClassName("square")[i].style.borderRight = "3px solid black";
 		}
 		document.getElementsByClassName("line")[i].style.borderBottom = "3px solid black";
 		i = i + size;
+		//console.log(i);
 	}
 }
 
@@ -293,4 +332,19 @@ function checkAnswer() {
 		document.getElementById("result").innerHTML = "Correct!";
 	else
 		document.getElementById("result").innerHTML = "Incorrect solution";
+}
+
+function showSolution() {
+	console.log(solution);
+	document.getElementById("solution").innerHTML = drawOutlineToHTML();
+	setSize(size);
+	drawBorder(size);
+	for (r = 0; r < 9; r++) {
+		for (c = 0; c < 9; c++) {
+			solutionboard = document.getElementById("solution");
+			line = solutionboard.getElementsByClassName("line")[r];
+			line.getElementsByClassName("num")[c].value = solution[r][c];
+			line.getElementsByClassName("num")[c].disabled = true;
+		}
+	}
 }
