@@ -21,59 +21,69 @@ function draw() {
 	board[0].innerHTML = txt;
 	setSize(Number(size));
 	drawBorder(Number(size));
-	solution = transform("swap col groups");
+	var solution = transform();
 	writeSolutionToBoard(solution);
-	removeNumbers();
+	removeCells();
 }
 
 function transform() {
-	var rootGrid1 = [[1,2,3,4,5,6,7,8,9],
-					 [4,5,6,7,8,9,1,2,3],
-				 	 [7,8,9,1,2,3,4,5,6],
-					 [2,3,4,5,6,7,8,9,1],
-					 [5,6,7,8,9,1,2,3,4],
-					 [8,9,1,2,3,4,5,6,7],
-				 	 [3,4,5,6,7,8,9,1,2],
-					 [6,7,8,9,1,2,3,4,5],
-					 [9,1,2,3,4,5,6,7,8]],
-	currentSolution = rootGrid1;
-	for (var i = 0; i < arguments.length; i++) {
-		if (arguments[i] ==  "vertical") {
+	var rootGrid1 = [[6,7,1,4,2,8,3,9,5],
+					 [2,5,4,3,6,9,7,8,1],
+				 	 [9,3,8,1,5,7,6,2,4],
+					 [5,8,9,6,3,4,1,7,2],
+					 [3,1,6,8,7,2,4,5,9],
+					 [7,4,2,5,9,1,8,3,6],
+					 [8,2,5,7,4,6,9,1,3],
+				 	 [1,6,3,9,8,5,2,4,7],
+					 [4,9,7,2,1,3,5,6,8]],
+	rootGrid2 = [[5,8,7,1,2,3,9,6,4],
+				 [9,2,3,4,8,6,1,5,7],
+				 [1,4,6,9,5,7,3,8,2],
+				 [8,5,9,2,3,1,4,7,6],
+				 [3,6,2,5,7,4,8,9,1],
+				 [7,1,4,8,6,9,2,3,5],
+				 [2,7,1,3,9,5,6,4,8],
+				 [6,9,8,7,4,2,5,1,3],
+				 [4,3,5,6,1,8,7,2,9]],
+	rootGrid3 = [[2,5,8,4,1,3,6,7,9],
+				 [6,1,3,5,9,7,8,2,4],
+				 [9,7,4,2,6,8,1,3,5],
+				 [7,6,5,8,2,4,9,1,3],
+				 [8,9,2,1,3,5,7,4,6],
+				 [3,4,1,6,7,9,2,5,8],
+				 [1,3,9,7,5,6,4,8,2],
+				 [4,2,6,3,8,1,5,9,7],
+				 [5,8,7,9,4,2,3,6,1]],
+	allGrids = [rootGrid1, rootGrid2, rootGrid3],
+	currentSolution = allGrids[Math.floor((Math.random () * 2) + 0)],
+	
+	transformations = ["vertical", "horizontal", "main diagonal", 
+							"swap two rows", "swap two columns", "swap row groups",
+							"swap col groups", "none"],
+	howManyTimes = Math.floor((Math.random() * 10) + 0); // number of transformations from 0 - 10
+
+	for (var i = 0; i < howManyTimes; i++) {
+		index = Math.floor((Math.random() * (transformations.length - 1)) + 0); // random index in transformations
+		if (transformations[index] ==  "vertical") {
 			for (r = 0; r < 9; r++) {
-				//tempList = rootGrid1[r];
 				for (c = 0; c < 4; c++) {
 					temp = currentSolution[r][c];
-					//console.log(temp);
 					currentSolution[r][c] = currentSolution[r][8 - c];
-					//console.log(tempList[8-c]);
 					currentSolution[r][8 - c] = temp;
 				}
-				console.log(currentSolution[r]);
-				//currentSolution.push(tempList);
 			}
 		}
-		else if (arguments[i]  == "horizontal") {
+		else if (transformations[index]  == "horizontal") {
 			for (r = 0; r < 4; r++) {
-				//tempList = rootGrid1[r];
-				//tempList2 = rootGrid1[8 - r];
 				for (c = 0; c < 9; c++) {
 					temp = currentSolution[r][c];
-					//console.log(temp);
 					currentSolution[r][c] = currentSolution[8 - r][c];
 					currentSolution[8 - r][c] = temp;
-					//console.log(tempList[8-c]);
 				}
-				//currentSolution.splice(r, 0, tempList);
-				//currentSolution.splice(currentSolution.length - r, 0, tempList2);
 			}
-			for (r = 0; r < 9; r++) {
-				console.log(currentSolution[r]);
-			}
-			//currentSolution.splice(4, 0, rootGrid1[4]);
 		}
-		else if (arguments[i] == "main diagonal") {
+		else if (transformations[index] == "main diagonal") {
 			for (r = 0; r < 9; r++) {
-				//tempboard = rootGrid1;
 				for (c = 0; c < 9; c++) {
 					if(c > r) {
 						temp = currentSolution[r][c];
@@ -81,12 +91,9 @@ function transform() {
 						currentSolution[c][r] = temp;
 					}
 				}
-				//currentSolution.push(tempboard[r]);
-				console.log(currentSolution[r]);
 			}
 		}
-		else if (arguments[i] == "swap two rows") {
-			//tempboard = rootGrid1;
+		else if (transformations[index] == "swap two rows") {
 			for (r = 0; r < 9; r++) {
 				for (c = 0; c < 9; c++) {
 					if (r == 0 || r == 3 || r == 6) {
@@ -95,10 +102,10 @@ function transform() {
 						currentSolution[r + 2][c] = temp;
 					}
 				}
-				console.log(currentSolution[r]);
 			}
 		}
-		else if (arguments[i] == "swap two columns") {
+
+		else if (transformations[index] == "swap two columns") {
 			for (r = 0; r < 9; r++) {
 				for (c = 0; c < 9; c++) {
 					if (c == 0 || c == 3 || c == 6) {
@@ -107,10 +114,9 @@ function transform() {
 						currentSolution[r][c + 2] = temp;		
 					}
 				}
-				console.log(currentSolution[r]);
 			}
 		}
-		else if (arguments[i] == "swap row groups") {
+		else if (transformations[index] == "swap row groups") {
 			for (r = 3; r < 6; r++) {
 				for (c = 0; c < 9; c++) {
 					temp = currentSolution[r][c];
@@ -118,23 +124,18 @@ function transform() {
 					currentSolution[r + 3][c] = temp;
 				}
 			}
-			for (r = 0; r < 9; r++) {
-				console.log(currentSolution[r]);
-			}
 		}
-		else if (arguments[i] == "swap col groups") {
+		else if (transformations[index] == "swap col groups") {
 			for (r = 0; r < 9; r++) {
 				for (c = 3; c < 6; c++) {
 					temp = currentSolution[r][c];
 					currentSolution[r][c] = currentSolution[r][c + 3];
 					currentSolution[r][c + 3] = temp;
 				}
-				console.log(currentSolution[r]);
 			}
 		}
-		return currentSolution;
 	}
-	
+	return currentSolution;
 }
 
 function writeSolutionToBoard(solution) {
@@ -147,8 +148,20 @@ function writeSolutionToBoard(solution) {
 	}
 }
 
-function removeNumbers() {
-	return;
+function removeCells() {
+	var numDelete = Math.floor((Math.random() * 15) + 60); // between 50 and 60
+	for (i = 0; i < numDelete; i++) {
+		randPos = Math.floor((Math.random() * 81) + 0);
+		//console.log(randPos);
+		row = Math.floor(randPos / 9);
+		col = Math.floor(randPos % 9);
+		// console.log(row);
+		// console.log(col);
+		x = document.getElementsByClassName("line")[row];
+		// console.log(document.getElementsByClassName("line")[row]);
+		x.getElementsByClassName("num")[col].disabled = false;
+		x.getElementsByClassName("num")[col].value = '';
+	}
 }
 
 function setSize(size) {
