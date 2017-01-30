@@ -28,6 +28,7 @@ var rootGrid1 = [[6,7,1,4,2,8,3,9,5],
 				 [1,3,9,7,5,6,4,8,2],
 				 [4,2,6,3,8,1,5,9,7],
 				 [5,8,7,9,4,2,3,6,1]],
+	root1 = [[1]],
 	root2 = [[4,1,2,3],
 			 [3,2,1,4],
 			 [1,3,4,2],
@@ -74,40 +75,26 @@ var rootGrid1 = [[6,7,1,4,2,8,3,9,5],
 			 [18,9,25,1,2,11,14,10,13,22,4,12,21,16,5,24,23,7,6,17,15,20,3,19,8],
 			 [24,21,10,3,13,12,9,20,16,5,19,17,6,22,8,15,14,4,2,18,23,25,11,7,1]];
 function draw() {
-	size = Number(document.getElementsByClassName("size")[0].value);
+	size = Number(document.getElementById("size").value);
 	width = height = size * size;
-	//var size = Math.pow(input, 2);
 	var board = document.getElementById("board");
 	var valid = true;
-	// console.log(size);
-	// validate input
 	reset();
 	for (i = 0; i <document.getElementsByClassName("size").length; i++) {
 		if (document.getElementsByClassName("size")[i].value < 1
 		|| document.getElementsByClassName("size")[i].value > 5) {
 			alert("Invalid input");
 			valid = false;
-			// break;
 		}
 	}
 	if (valid) {
-		console.log('true');
-		board.style.position = "static";
-		board.innerHTML = drawOutlineToHTML();
-		board.innerHTML += "<div><button id='button' onclick='checkAnswer()'>Finish</button> \
-							<p id='result'></p> \
-							<button id='solButton' onclick='showHideSolution(this)'>Show Solution</button></div>";
-
-		setSize();
-		drawBorder("board");
+		drawOutlineToHTML("board");
+		document.getElementById("finAndShow").innerHTML += 
+		"<button id='button' onclick='checkAnswer()'>Finish</button> \
+		<p id='result'></p> \
+		<button id='solButton' onclick='showHideSolution(this)'>Show Solution</button></div>";
 		solution = transform(size);
-		// ----------------console solution---------------------
-		// for (r = 0; r < width; r++) {
-		// 	console.log(solution[r]);
-		// }
-		// console.log("<br>");
-		// -----------------------------------------------------
-		writeSolutionToBoard(solution, "board");
+	writeSolutionToBoard(solution, "board");
 		removeCells();
 	}
 }
@@ -115,15 +102,34 @@ function draw() {
 function reset() {
 	document.getElementById("board").innerHTML = "";
 	document.getElementById("solution").innerHTML = "";
-}
-function size() {
-	return document.getElementsByClassName("size")[0].value;
+	document.getElementById("finAndShow").innerHTML = "";
 }
 
-function getSolution() {
-	return solution;
+function setSize() {
+	/* ------Reset width for bigger size so that player can see the whole board--------*/
+		for (c = 0; c < document.getElementsByClassName("square").length; c++) {
+			if (size >= 1 && size <= 3) {
+				document.getElementsByClassName("square")[c].className += " bigSquare";
+			}
+			else {
+				document.getElementsByClassName("square")[c].className += " smallSquare";
+			}
+		}
 }
-function drawOutlineToHTML() {
+
+function drawBorder(parentName) {
+	var parent = document.getElementById(parentName).getElementsByClassName("line");
+	var i = size - 1;
+	while (i < width - 1) {
+		for (j = 0; j < height; j++) {
+			parent[j].getElementsByClassName("square")[i].className += " verticalOutline";
+			parent[i].getElementsByClassName("square")[j].className += " horizontalOutline";
+		}
+		i += size;
+	}
+}
+
+function drawOutlineToHTML(parentName) {
 	var txt = "";
 	for (i = 0; i < width; i++) {
 		txt += "<div class='line'>";
@@ -133,17 +139,20 @@ function drawOutlineToHTML() {
 		}
 		txt += "</div>";
 	}
-	return txt;
+	document.getElementById(parentName).innerHTML = txt;
+	setSize();
+	drawBorder(parentName);
 }
 
 function transform(size) {
 	var transformations = ["vertical", "horizontal", "main diagonal"];
 	var howManyTimes = Math.floor((Math.random() * 10) + 3); // number of transformations from 3 - 13
 	var currentSolution = [];
-	console.log("Number of transformations: " + howManyTimes);
-	if (size == 2) {
+	if (size == 1) {
+		currentSolution = root1;
+	}
+	else if (size == 2) {
 		currentSolution = root2;
-		//console.log(currentSolution);
 	}
 	else if (size == 3) {
 		transformations.push("swap two rows", "swap two columns", "swap row groups",
@@ -172,7 +181,6 @@ function transform(size) {
 		else if (transformations[index]  == "horizontal") {
 			for (r = 0; r < Math.floor(width / 2); r++) {
 				for (c = 0; c < height; c++) {
-					//console.log(currentSolution);
 					temp = currentSolution[r][c];
 					currentSolution[r][c] = currentSolution[width - 1 - r][c];
 					currentSolution[width - 1 - r][c] = temp;
@@ -248,7 +256,6 @@ function writeSolutionToBoard(solution, parentName) {
 
 function removeCells() {
 	if (size == 1) {
-		//console.log('1');
 		document.getElementsByClassName("line")[0].getElementsByClassName("num")[0].value = '';
 		document.getElementsByClassName("line")[0].getElementsByClassName("num")[0].disabled = false;
 	}
@@ -260,49 +267,15 @@ function removeCells() {
 		var numDelete = Math.floor((Math.random() * range) + lowerLimit); 
 		for (i = 0; i < numDelete; i++) {
 			randPos = Math.floor((Math.random() * boardsize) + 0);
-			//console.log(randPos);
 			row = Math.floor(randPos / width);
 			col = Math.floor(randPos % height);
-			// console.log(row);
-			// console.log(col);
 			x = document.getElementsByClassName("line")[row];
-			// console.log(document.getElementsByClassName("line")[row]);
 			x.getElementsByClassName("num")[col].disabled = false;
 			x.getElementsByClassName("num")[col].value = '';
 		}
 	}
 }
 
-function setSize() {
-	/* ------Reset width for bigger size so that player can see the whole board--------*/
-	if (size >= 1 && size <= 3) {
-		widthSize = 50 * width + 3 * (size - 1) + width - size ;
-		heightSize = 50;
-	}
-	else {
-		widthSize = 25 * width + 2 * (size - 1) + width - size;
-		heightSize = 25;
-	}
-
-	for (i = 0; i < document.getElementsByClassName("line").length; i++) {
-		document.getElementsByClassName("line")[i].style.width = String(widthSize + "px");
-		document.getElementsByClassName("line")[i].style.height = String(heightSize + "px");
-	}
-}
-
-function drawBorder(parentName) {
-	var parent = document.getElementById(parentName).getElementsByClassName("line");
-	var i = size - 1;
-	//console.log(size);
-	while (i < width - 1) {
-		for (j = 0; j < height; j++) {
-			parent[j].getElementsByClassName("square")[i].style.borderRight = "3px solid black";
-		}
-		parent[i].style.borderBottom = "3px solid black";
-		i = i + size;
-		//console.log(i);
-	}
-}
 
 function checkInput(e, self) {
 	var keynum;
@@ -405,33 +378,22 @@ function checkAnswer() {
 }
 
 function showHideSolution(self) {
-	//draw();
-
 	var board = document.getElementById("board");
 	var solutionboard = document.getElementById("solution");
 	if (document.getElementById("solButton").innerHTML == "Show Solution") {
 		document.getElementById("solButton").innerHTML = "Hide Solution";
-		board.style.transform = "translateY(50px)";
-		board.style.left = "200px";
-		//var xVal = 1912 - Number(widthSize) - 200;
-		//console.log(xVal);
-		solutionboard.style.transform = "translateY(50px)";
-		solutionboard.style.right = "200px";
-		board.style.marginBottom = solutionboard.style.marginBottom = "50px";
-		board.style.position = solutionboard.style.position = "absolute";
-		solutionboard.innerHTML = drawOutlineToHTML();
-		setSize();
-		//console.log(document.getElementsByClassName("line")[0].parentElement);
-		drawBorder("solution");
+		board.style.cssFloat = "left";
+		solutionboard.style.cssFloat = "right";
+		solutionboard.style.position = "static";
+		//board.style.marginBottom = solutionboard.style.marginBottom = "50px";
+		drawOutlineToHTML("solution");
 		writeSolutionToBoard(solution, "solution");
-		//document.getElementById("enter").disabled = true;
 	}
 	else {
 		self.innerHTML = "Show Solution";
 		solutionboard.innerHTML = "";
 		board.style.transform = solutionboard.style.transform = "none";
-		board.style.position = "static";
-		//document.getElementById("enter").disabled = false;
+		board.style.cssFloat = "none";
 	}
 
 }

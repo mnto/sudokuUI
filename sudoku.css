@@ -36,21 +36,13 @@ input[type="text"][disabled] {
 	color: black;
 }
 .enterSize {
-	text-align: center;
 	margin-top: 10px;
 	margin-bottom: 10px;
 }
-.size{
+#size {
 	display: inline;
 	width: 50px;
 	text-align: center;
-}
-
-.multiply {
-	font-family: Georgia;
-	color: white;
-	font-size: 20px;
-	display: inline;
 }
 
 #specification {
@@ -60,32 +52,41 @@ input[type="text"][disabled] {
 	font-size: 15px;
 }
 #board {
-	margin: auto;
-	text-align: center;
-	display: inline;
-	position: static;
+	/*margin: 0 auto;*/
+	align-items: center;
+	/*display: block;*/
+	/*position: absolute;*/
 }
 
-.smallboard {
-	width: 50px;
-	height: 50px;
-}
-.bigboard {
+.smallSquare {
 	width: 25px;
 	height: 25px;
 }
+.bigSquare {
+	width: 50px;
+	height: 50px;
+}
+
 .line {
 	margin: 0 auto;
-	border-bottom: 1px solid black;
 	display: flex;
+	align-items: center;
 }
 
 .square {
-	height: 100%;
 	border-right: 1px solid black;
+	border-bottom: 1px solid black;
 	text-align: center;
 	font-family: Arial;
 	font-size: 22px;
+}
+
+.verticalOutline {
+	border-right: 3px solid black;
+}
+
+.horizontalOutline {
+	border-bottom: 3px solid black;
 }
 
 .num {
@@ -100,10 +101,6 @@ input[type="text"][disabled] {
 	font-size: 22px;
 }
 
-.bigSquare {
-	width: 25px;
-	height: 25px;
-}
 
 button {
 	font-size: 15px;
@@ -113,6 +110,10 @@ button {
 	display: inline;
 	text-align: center;
 	align-items: center;
+}
+
+#finAndShow {
+	clear: both;
 }
 
 
